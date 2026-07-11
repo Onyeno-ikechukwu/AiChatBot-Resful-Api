@@ -1,0 +1,20 @@
+[90m= [39m[
+    {#8157
+      +"[1mTables_in_apichatbot[22m": [32m"[39m[32mchat[39m[32m"[39m,
+    },
+    {#8159
+      +"[1mTables_in_apichatbot[22m": [32m"[39m[32mmigrations[39m[32m"[39m,
+    },
+    {#8160
+      +"[1mTables_in_apichatbot[22m": [32m"[39m[32mpassword_reset_tokens[39m[32m"[39m,
+    },
+    {#8155
+      +"[1mTables_in_apichatbot[22m": [32m"[39m[32msessions[39m[32m"[39m,
+    },
+    {#8147
+      +"[1mTables_in_apichatbot[22m": [32m"[39m[32msubscriptions[39m[32m"[39m,
+    },
+    {#8154
+      +"[1mTables_in_apichatbot[22m": [32m"[39m[32musers[39m[32m"[39m,
+    },
+  ]
