@@ -32,6 +32,10 @@ class AiChatBotRequest extends FormRequest
      */
     public function rules(): array
     {
+        if ($this->isMethod('get')) {
+            return [];
+        }
+        
         return [
             'user_prompt' => 'string',
             'images.*' => 'image|mimes:jpg,jpeg,png,gif,svg|max:1024',
