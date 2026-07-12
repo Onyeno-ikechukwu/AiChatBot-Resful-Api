@@ -5,20 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AiChatBotRequest;
 use App\Http\Resources\AiChatBotResource;
 use App\Models\AiChatBot;
-use App\Models\Payment;
 use Illuminate\Http\Request;
-use App\Service\GroqAiService;
-use Illuminate\Support\Facades\Auth;
 
 class AiChatBotController extends Controller
 {
-    protected GroqAiService $groqAiService;
-
-     public function __construct(GroqAiService $groqAiService){
-        $this->groqAiService = $groqAiService;
-    }
-
-
     /**
      * List the authenticated user's AI chat conversations.
      *
@@ -26,39 +16,9 @@ class AiChatBotController extends Controller
      * Supports searching by title/description and sorting by fields like title, price, created_at, etc.
      * Prefix sort field with "-" for descending order (e.g. "-created_at").
      */
-    Public function index(Request $request){
+    Public function index(Request $request, AiChatBotRequest $requesValidator){
 
-        $user = $request->user();
-
-        $query = AiChatBot::where('user_id', $user->id);
-
-        if ($request->has('search') && !empty($request->search)){
-            $query->where('title', 'like', '%' . $request->search . '%')
-                ->orWhere('description', 'like', '%' . $request->search . '%');
-        }
-
-        $allowedSorts = ['title', 'price', 'created_at', 'updated_at','location', 'status', 'views', 'is_featured'];
-        $sortField = 'created_at';
-        $sortDirection = 'desc';
-
-        if ($request->has('sort') && !empty($request->sort)) {
-            $sort = $request->sort;
-            if (str_starts_with($sort, '-')){
-                $sortField = substr($sort, 1);
-                $sortDirection = 'desc';
-            } else {
-                $sortField = $sort;
-                $sortDirection = 'asc';
-            }
-        }
-        if (!in_array($sortField, $allowedSorts)) {
-            $sortField = 'created_at';
-            $sortDirection = 'desc';
-        }
-        $posts = $query->orderBy($sortField, $sortDirection)->paginate($request->get('per_page'));
-             
-           
-
+        $posts = $requesValidator->indexValidationRule($request);
         return response()->json(AiChatBotResource::collection($posts));
     }
 
@@ -71,86 +31,9 @@ class AiChatBotController extends Controller
      */
     public function store(AiChatBotRequest $request)
     {
-        $validated = $request->validated();
+        $paths= [];
 
-        $user = $request->user();
-
-        $exist = Payment::where('user_id', $user->id)->exists();
-
-        $isSubscribed = Payment::where('user_id', $user->id)
-            ->where('status', 'successful')
-            ->where('expires_at', '>', now())
-            ->exists();
-
-        if (!$exist && !$isSubscribed) {
-
-            $count = AiChatBot::where('user_id', $user->id)
-                ->whereDate('created_at', today())
-                ->count();
-
-            if ($count >= 110) {
-                return response()->json([
-                    'message' => 'You have reached your daily free limit. Please subscribe.'
-                ], 422);
-            }
-        }
-
-        $paths = [];
-
-        if ($request->hasFile('images')) {
-
-            $files = $request->file('images');
-
-            if (!is_array($files)) {
-                $files = [$files];
-            }
-
-            foreach ($files as $image) {
-                $paths[] = $image->store('ChatImages', 'public');
-            }
-        }
-
-        $history = AiChatBot::where('user_id', $user->id)
-            ->latest()
-            ->take(20)
-            ->get()
-            ->reverse();
-
-        if ($request->hasFile('images') && !empty($validated['user_prompt'])) {
-
-            $response = $this->groqAiService->getChatImagePrompt(
-                $request->file('images'),
-                $validated['user_prompt'],
-                $history
-            );
-
-        } elseif ($request->hasFile('images')) {
-
-            $response = $this->groqAiService->getChatImage(
-                $request->file('images'),
-            );
-
-        } elseif (!empty($validated['user_prompt'])) {
-
-            $response = $this->groqAiService->getChatPrompt(
-                $validated['user_prompt'],
-                $history
-            );
-
-        } else {
-
-            return response()->json([
-                'message' => 'Please provide a prompt or an image.'
-            ], 422);
-
-        }
-
-        $chat = AiChatBot::create([
-            'user_id' => $user->id,
-            'user_prompt' => $validated['user_prompt'] ?? null,
-            'ai_response' => $response,
-            'image_path' => $paths,
-        ]);
+        $chat = $request->storeValidationRule($request, $paths);
 
         return response()->json(new AiChatBotResource($chat));
     }
@@ -164,12 +47,9 @@ class AiChatBotController extends Controller
      */
     public function show(AiChatBot $chat, Request $request)
     {
-        $query = $chat->where('user_id', $request->user()->id);
+        $chat = $chat->where('user_id', $request->user()->id)->first();
 
-
-        return response()->json(new AiChatBotResource($chat));
-        
-        
+        return response()->json(new AiChatBotResource($chat)); 
     }
 
     /**
@@ -182,64 +62,10 @@ class AiChatBotController extends Controller
      */
     public function update(AiChatBot $chat, AiChatBotRequest $request)
     {
-        abort_if(Auth::id() != $chat->user_id, 403, 'Access Forbidden');
+        $paths= [];
+        $show = $request->updateValidationRule($request, $chat, $paths);
 
-        $validated = $request->validated();
-
-        $data = [];
-
-        if (isset($validated['user_prompt'])) {
-            $data['user_prompt'] = $validated['user_prompt'];
-        }
-
-        if ($request->hasFile('images')) {
-
-            $files = $request->file('images');
-
-            if (!is_array($files)) {
-                $files = [$files];
-            }
-
-            $paths = [];
-
-            foreach ($files as $image) {
-                $paths[] = $image->store('ChatImages', 'public');
-            }
-
-            $data['image_path'] = $paths;
-        }
-
-        if ($request->hasFile('images') && !empty($validated['user_prompt'])) {
-
-            $response = $this->groqAiService->getChatImagePrompt(
-                $request->file('images')[0],
-                $validated['user_prompt']
-            );
-
-        } elseif ($request->hasFile('images')) {
-
-            $response = $this->groqAiService->getChatImage(
-                $request->file('images')
-            );
-
-        } elseif (!empty($validated['user_prompt'])) {
-
-            $response = $this->groqAiService->getChatPrompt(
-                $validated['user_prompt']
-            );
-
-        } else {
-
-            return response()->json([
-                'message' => 'Nothing to update.'
-            ], 422);
-        }
-
-        $data['ai_response'] = $response;
-
-        $chat->update($data);
-
-        return response()->json(new AiChatBotResource($chat));
+        return response()->json(new AiChatBotResource($show));
     }
 
     /**
@@ -249,9 +75,8 @@ class AiChatBotController extends Controller
      *
      * @param AiChatBot $chat The chat conversation instance to delete (auto-resolved via route-model binding).
      */
-    function destroy(AiChatBot $chat){  
-        abort_if(Auth::id() != $chat->user_id, 403, 'Access Forbidden');
-        $chat->delete();
+    function destroy(AiChatBot $chat,AiChatBotRequest $requestValidator){
+        $requestValidator->destroyValidationRule($chat);
         return response()->json(['message' => 'AiChatBot deleted successfully.'], 200);
     }
 }

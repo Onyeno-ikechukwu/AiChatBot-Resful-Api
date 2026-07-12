@@ -1,9 +1,0 @@
-[90m= [39m[34;4mIlluminate\Support\Collection[39;24m {#8177
-    [34mall[39m: [
-      {#8176
-        +"[1mid[22m": [35m1[39m,
-        +"[1mmigration[22m": [32m"[39m[32m0001_01_01_000000_create_users_table[39m[32m"[39m,
-        +"[1mbatch[22m": [35m1[39m,
-      },
-    ],
-  }

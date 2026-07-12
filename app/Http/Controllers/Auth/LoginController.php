@@ -9,7 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\LoginResource;
 
-class AuthenticatedSessionController extends Controller
+class LoginController extends Controller
 {
     /**
      * Authenticate a user and return an API token.
@@ -29,10 +29,7 @@ class AuthenticatedSessionController extends Controller
         $token = $user->createToken('main')->plainTextToken;
 
         // Step 4: Return it directly to Postman
-        return response()->json([
-            'user' => new LoginResource($user),
-            'token' => $token
-        ]);
+        return response()->json(['message' => 'Login Successful', 'token' => $token], 200);
     }
 
     /**
@@ -42,9 +39,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request)
     {
-        $user = $request->user();
-        $user->currentAccessToken()->delete();
-
+        $request->user()->currentAccessToken()->delete();
         return response()->noContent();
     }
 }

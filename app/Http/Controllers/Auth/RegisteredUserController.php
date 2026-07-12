@@ -42,9 +42,6 @@ class RegisteredUserController extends Controller
 
         $token = $user->createToken('main')->plainTextToken;
 
-        return response()->json([
-            'user' => new LoginResource($user),
-            'token' => $token,
-        ]);
+        return response()->noContent();
     }
 }

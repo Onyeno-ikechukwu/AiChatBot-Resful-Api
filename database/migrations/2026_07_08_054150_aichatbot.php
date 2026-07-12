@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('chat', function(Blueprint $table){
             $table->id();
-            $table->foreign('user_id')->constrained('users')->cascadeOnDelete()->nullable();
+            $table->VARCHAR('user_id')
+                ->nullable()
+                ->constrained()
+                ->cascadeOnDelete();
             $table->string('image_path')->nullable();
             $table->string('ip_address')->nullable();
             $table->text('user_prompt')->nullable();

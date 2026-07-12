@@ -6,6 +6,7 @@ use App\Models\Payment;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
+
 class CheckExpiredSubscriptions extends Command
 {
     protected $signature = 'subscriptions:check-expired';

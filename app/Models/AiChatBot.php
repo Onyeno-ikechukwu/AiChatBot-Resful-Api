@@ -8,6 +8,7 @@ class AiChatBot extends Model
 {
     protected $table = 'chat';
     protected $fillable = [
+        
         'user_id',
         'ip_address',
         'image_path',

@@ -20,7 +20,7 @@ Route::middleware(['auth:sanctum', 'throttle:6,1'])->group(function(){
     Route::get('/payment/callback', [FlutterwaveController::class, 'callback']);
 }); 
 
-Route::apiResource('chat/unregistered', UnRegisteredAiChatBotController::class);
+Route::apiResource('unregistered-chat/chat', UnRegisteredAiChatBotController::class);
 
 
 require __DIR__.'/auth.php';
