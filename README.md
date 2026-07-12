@@ -223,25 +223,43 @@ http://localhost:8000/api
 
 Authenticated endpoints use **Laravel Sanctum** token-based authentication.
 
-**Getting a Token:**
+**Login:**
+
+```bash
+# Login
+POST /api/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "user@example.com",
+  "password": "your-password"
+}
+```
+
+**Successful Login Response:**
+
+Login returns **`204 No Content`** with no response body. The Sanctum token is not returned in the response; the session cookie handles authentication for subsequent requests.
+
+**Register:**
 
 ```bash
 # Register a new user
 POST /api/register
+Content-Type: application/json
+Accept: application/json
 
-# Login
-POST /api/login
-
-# Response includes:
 {
-  "token": "your-sanctum-token-here",
-  "user": { ... }
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "your-password",
+  "password_confirmation": "your-password"
 }
 ```
 
-**Using the Token:**
+**Using Sanctum Tokens for API Access:**
 
-Include the token in the `Authorization` header for authenticated requests:
+For API routes (prefixed with `/api`), include a Sanctum token in the `Authorization` header:
 
 ```
 Authorization: Bearer your-sanctum-token-here

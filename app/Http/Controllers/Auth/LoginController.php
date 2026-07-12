@@ -29,7 +29,7 @@ class LoginController extends Controller
         $token = $user->createToken('main')->plainTextToken;
 
         // Step 4: Return it directly to Postman
-        return response()->json(['message' => 'Login Successful', 'token' => $token], 200);
+        return response()->noContent();
     }
 
     /**
