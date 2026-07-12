@@ -10,17 +10,17 @@ Route::middleware(['auth:sanctum', 'throttle:6,1'])->group(function(){
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    Route::apiResource('chat', AiChatBotController::class);
+    Route::apiResource('bot/chat', AiChatBotController::class);
     Route::get(
-    '/payment/callback',
+    'bot/payment/callback',
     [FlutterwaveController::class,'callback']
     );
-    Route::post('/payment', [FlutterwaveController::class, 'checkout']);
+    Route::post('bot/payment', [FlutterwaveController::class, 'checkout']);
 
     Route::get('/payment/callback', [FlutterwaveController::class, 'callback']);
 }); 
 
-Route::apiResource('unregistered-chat/chat', UnRegisteredAiChatBotController::class);
+Route::apiResource('botunregistered-chat/chat', UnRegisteredAiChatBotController::class);
 
 
 require __DIR__.'/auth.php';
