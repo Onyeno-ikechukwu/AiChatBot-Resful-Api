@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('chat', function(Blueprint $table){
             $table->id();
-            $table->VARCHAR('user_id')
+            $table->foreignId('user_id')
                 ->nullable()
                 ->constrained()
                 ->cascadeOnDelete();
