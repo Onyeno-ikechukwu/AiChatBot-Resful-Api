@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\AiChatBotController;
+use App\Http\Controllers\Bot\AiChatBotController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UnRegisteredAiChatBotController;
-use App\Http\Controllers\FlutterwaveController;
+use App\Http\Controllers\Bot\UnRegisteredAiChatBotController;
+use App\Http\Controllers\Bot\FlutterwaveController;
 
 Route::middleware(['auth:sanctum', 'throttle:6,1'])->group(function(){
     Route::get('/user', function (Request $request) {

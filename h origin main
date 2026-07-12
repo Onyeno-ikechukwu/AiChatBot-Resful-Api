@@ -1,9 +1,0 @@
-* [33m8bf3d06[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m modernization of the code
-[31m|[m * [33mdcad646[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Update UnRegisteredAiChatBotController.php
-[31m|[m * [33m3e0a428[m Update FlutterwaveController.php
-[31m|[m * [33mb03b31f[m Update AiChatBotController.php
-[31m|[m * [33m3af4332[m Delete Table('chat');
-[31m|[m * [33me701e58[m Delete ')->get();
-[31m|[m * [33meb1a645[m Delete elect('SHOW TABLES');
-[31m|[m[31m/[m  
-* [33m278ea91[m initial commit

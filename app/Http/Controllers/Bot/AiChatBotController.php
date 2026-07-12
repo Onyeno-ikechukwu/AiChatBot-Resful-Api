@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Bot;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\AiChatBotRequest;
 use App\Http\Resources\AiChatBotResource;
 use App\Models\AiChatBot;
