@@ -86,7 +86,49 @@ This creates the following tables:
 - `chat` – Stores all chat conversations (both registered and unregistered users)
 - Other default Laravel tables (users, personal_access_tokens, etc.)
 
-### 6. Install & Configure Scramble (API Documentation)
+### 6. Seed the Database (Optional)
+
+The project includes a **UserSeeder** that creates a test user for development purposes.
+
+#### Seeder Files
+
+**`database/seeders/UserSeeder.php`** – Creates a single free-tier test user:
+
+```php
+\App\Models\User::create([
+    'email' => 'free@example.com',
+    'password' => "123456789",  // Auto-hashed via User model's cast
+]);
+```
+
+| Field | Value | Description |
+|-------|-------|-------------|
+| Email | `free@example.com` | Use this to log in |
+| Password | `123456789` | Plain text (hashed automatically by Laravel) |
+
+#### Running Seeders
+
+**Seed the test user individually:**
+
+```bash
+php artisan db:seed --class=UserSeeder
+```
+
+**Run all seeders (if additional seeders are added in the future):**
+
+```bash
+php artisan db:seed
+```
+
+**Reset migrations and seed in one command (fresh start):**
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+> **Note:** The seeded user is a **non-subscribed** user and will be subject to the **110 chats per day** free-tier limit. To test as a subscribed user, you would need a Payment record with `status = 'successful'` and `expires_at > now()` via the Flutterwave payment flow.
+
+### 7. Install & Configure Scramble (API Documentation)
 
 [**Scramble**](https://github.com/dedoc/scramble) is a Laravel package that automatically generates OpenAPI (Swagger) documentation from your codebase by analyzing route definitions, controllers, FormRequest validation rules, and PHPDoc annotations.
 
