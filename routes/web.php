@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return ['Laravel' => app()->version()];
+    return ['message' => "Welcome to ViewGenerator, view General Api"];
 });
 
-require __DIR__.'/auth.php';
