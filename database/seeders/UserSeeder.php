@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
     public function run()
     {
         \App\Models\User::create([
-            'email' => 'free@example.com',
+            'email' => 'admin@example.com',
             'password' => "123456789",
         ]);
     }

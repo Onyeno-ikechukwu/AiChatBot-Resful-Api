@@ -30,6 +30,7 @@ class LoginController extends Controller
 
         // Step 4: Return it directly to Postman
         return response()->noContent();
+
     }
 
     /**

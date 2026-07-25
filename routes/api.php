@@ -12,11 +12,8 @@ Route::middleware(['auth:sanctum', 'throttle:6,1'])->group(function(){
     });
     Route::prefix('bot')->group(function(){
         Route::apiResource('chat', AiChatBotController::class);
-        Route::get(
-        'payment/callback',
-        [FlutterwaveController::class,'callback']
-        );
-        Route::post('payment', [FlutterwaveController::class, 'checkout']);
+        Route::get('paymentmethod', [FlutterwaveController::class, 'paymentMethod'])->name('payment.callback');
+        Route::post('createpayment', [FlutterwaveController::class, 'createPayment'])->name('payment.create');
     });
 }); 
 
